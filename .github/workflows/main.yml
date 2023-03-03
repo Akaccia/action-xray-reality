@@ -37,4 +37,4 @@ jobs:
             ./Xray-core/xray*
             
         env:
-          GITHUB_TOKEN: ${{ secrets.release }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE }}
