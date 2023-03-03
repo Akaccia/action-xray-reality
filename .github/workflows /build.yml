@@ -1,0 +1,30 @@
+name: Build and Release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.20.1
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Build Xray-core for Linux and Windows
+        run: |
+          git clone https://github.com/XTLS/Xray-core.git 
+          cd Xray-core 
+        
+          go build -o xray -trimpath -ldflags "-s -w -buildid=" ./main 
+          env GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc \
+          go build -o xray.exe -trimpath -ldflags "-s -w -buildid=" ./main 
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            Xray-core/xray*
+          token: ${{secrets.release}}
+            
